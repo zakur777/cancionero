@@ -1,0 +1,29 @@
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Archivos de Zone Identifier de Windows
+*.Zone.Identifier
+
+# Logs
+*.log
+logs/
+
+# Dependencias de Node.js (si las usas en el futuro)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Archivos de configuración del editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos temporales
+tmp/
+temp/

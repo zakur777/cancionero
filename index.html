@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancionero Online - Acordes de Guitarra</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Aplicación de cancionero con acordes de guitarra para uso offline">
+    <meta name="theme-color" content="#49BFAA">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Cancionero">
+    <meta name="msapplication-TileColor" content="#49BFAA">
+    <meta name="msapplication-config" content="browserconfig.xml">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="logosolo.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="logosolo.png">
+    <link rel="apple-touch-icon" href="logosolo.png">
+    <link rel="mask-icon" href="logosolo.png" color="#49BFAA">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="auth.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Tipografías de la identidad visual -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Clear+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+        /* Fallback para Clear Sans si no está disponible */
+        @font-face {
+            font-family: 'Clear Sans';
+            src: local('Clear Sans'), local('ClearSans');
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Clear Sans';
+            src: local('Clear Sans Bold'), local('ClearSans-Bold');
+            font-weight: bold;
+            font-style: normal;
+        }
+        /* Simulación de Peace Sans con una fuente similar */
+        @font-face {
+            font-family: 'Peace Sans';
+            src: local('Roboto'), local('Open Sans');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">
+                    <i class="fas fa-guitar"></i>
+                    Cancionero Online
+                </h1>
+                <div class="header-actions">
+                    <button class="btn-secondary" id="addSongBtn">
+                        <i class="fas fa-plus"></i>
+                        Nueva Canción
+                    </button>
+                    <button class="btn-primary" id="viewSongsBtn">
+                        <i class="fas fa-list"></i>
+                        Ver Canciones
+                    </button>
+                    <button class="btn-install" id="installBtn" style="display: none;">
+                        <i class="fas fa-download"></i>
+                        Instalar App
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="app-layout">
+                <!-- Sidebar -->
+                <div class="sidebar" id="sidebar">
+                    <div class="sidebar-header">
+                        <h3 id="sidebarTitle">
+                            <i class="fas fa-sort-alpha-down"></i>
+                            <span class="sidebar-title-text">Orden Alfabético</span>
+                        </h3>
+                        <button class="sidebar-toggle" id="sidebarToggle">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="alphabet-tabs" id="alphabetTabs">
+                        <!-- Alphabet tabs will be generated here -->
+                    </div>
+                    
+                    <div class="sidebar-stats" id="sidebarStats">
+                        <div class="stat-item">
+                            <span class="stat-number" id="totalSongs">0</span>
+                            <span class="stat-label">Canciones</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Views Container -->
+                <div class="views-container">
+                    <!-- Song List View -->
+                    <div class="view" id="songListView">
+                        <div class="content-header">
+                            <div class="header-left">
+                                <h2 id="sectionTitle">Mis Canciones</h2>
+                                <span class="current-filter" id="currentFilter"></span>
+                            </div>
+                            <div class="search-container">
+                                <input type="text" id="searchInput" placeholder="Buscar canciones..." class="search-input">
+                                <i class="fas fa-search search-icon"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="songs-grid" id="songsGrid">
+                            <!-- Songs will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Song View -->
+                    <div class="view hidden" id="songView">
+                        <div class="song-header">
+                            <button class="btn-back" id="backBtn">
+                                <i class="fas fa-arrow-left"></i>
+                                Volver
+                            </button>
+                            <div class="song-info">
+                                <h2 id="songTitle">Título de la Canción</h2>
+                                <p id="songArtist">Artista</p>
+                            </div>
+                            <div class="song-controls">
+                                <div class="transpose-controls">
+                                    <button class="btn-transpose" id="transposeDown">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span class="current-key" id="currentKey">C</span>
+                                    <button class="btn-transpose" id="transposeUp">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <button class="btn-secondary" id="editSongBtn">
+                                    <i class="fas fa-edit"></i>
+                                    Editar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="song-content">
+                            <div class="chord-diagram-container" id="chordDiagrams">
+                                <!-- Chord diagrams will appear here -->
+                            </div>
+                            <div class="lyrics-container" id="lyricsContainer">
+                                <!-- Song lyrics with chords will appear here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add/Edit Song View -->
+                    <div class="view hidden" id="addSongView">
+                        <div class="content-header">
+                            <button class="btn-back" id="backFromAddBtn">
+                                <i class="fas fa-arrow-left"></i>
+                                Volver
+                            </button>
+                            <h2 id="addSongTitle">Nueva Canción</h2>
+                        </div>
+
+                        <form class="song-form" id="songForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="titleInput">Título *</label>
+                                    <input type="text" id="titleInput" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="artistInput">Artista *</label>
+                                    <input type="text" id="artistInput" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="keyInput">Tonalidad</label>
+                                    <select id="keyInput">
+                                        <option value="C">C (Do)</option>
+                                        <option value="C#">C# (Do#)</option>
+                                        <option value="D">D (Re)</option>
+                                        <option value="D#">D# (Re#)</option>
+                                        <option value="E">E (Mi)</option>
+                                        <option value="F">F (Fa)</option>
+                                        <option value="F#">F# (Fa#)</option>
+                                        <option value="G">G (Sol)</option>
+                                        <option value="G#">G# (Sol#)</option>
+                                        <option value="A">A (La)</option>
+                                        <option value="A#">A# (La#)</option>
+                                        <option value="B">B (Si)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tempoInput">Tempo (BPM)</label>
+                                    <input type="number" id="tempoInput" min="60" max="200" value="120">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="lyricsInput">Letra con Acordes *</label>
+                                
+                                <!-- Tabs para elegir método -->
+                                <div class="input-tabs">
+                                    <button type="button" class="tab-btn active" id="manualTab">Manual</button>
+                                    <button type="button" class="tab-btn" id="interactiveTab">Interactivo</button>
+                                </div>
+
+                                <!-- Método Manual (existente) -->
+                                <div class="input-method" id="manualMethod">
+                                    <textarea id="lyricsInput" rows="15" placeholder="Ingresa la letra con los acordes entre corchetes. Ejemplo:&#10;&#10;[Am]Cuando era [F]joven pensé que el a[C]mor era lo más im[G]portante&#10;[Am]Ahora que soy [F]viejo sé que el a[C]mor es lo más impor[G]tante&#10;&#10;Puedes usar:&#10;- [Am] para acordes menores&#10;- [C7] para acordes con séptima&#10;- [F/C] para acordes con bajo específico"></textarea>
+                                </div>
+
+                                <!-- Método Interactivo (nuevo) -->
+                                <div class="input-method hidden" id="interactiveMethod">
+                                    <div class="interactive-controls">
+                                        <textarea id="plainTextInput" rows="8" placeholder="Pega aquí la letra de la canción sin acordes...&#10;&#10;Ejemplo:&#10;Cuando era joven pensé que el amor era lo más importante&#10;Ahora que soy viejo sé que el amor es lo más importante"></textarea>
+                                        <button type="button" class="btn-secondary" id="processTextBtn">
+                                            <i class="fas fa-magic"></i>
+                                            Procesar Texto
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="syllable-editor" id="syllableEditor">
+                                        <!-- Las sílabas procesadas aparecerán aquí -->
+                                    </div>
+
+                                    <div class="scale-info" id="scaleInfo">
+                                        <h4>Acordes Sugeridos:</h4>
+                                        <div class="chord-suggestions" id="chordSuggestions">
+                                            <!-- Acordes de la escala aparecerán aquí -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary" id="cancelBtn">Cancelar</button>
+                                <button type="submit" class="btn-primary">
+                                    <i class="fas fa-save"></i>
+                                    Guardar Canción
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Chord Modal -->
+    <div class="modal hidden" id="chordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="chordModalTitle">Acorde</h3>
+                <button class="modal-close" id="closeChordModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="chord-diagram-large" id="chordDiagramLarge">
+                    <!-- Large chord diagram -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="demo-users.js"></script>
+    <script src="auth.js"></script>
+    <script src="script.js"></script>
+    
+    <!-- PWA Service Worker Registration -->
+    <script>
+        // Registrar Service Worker para funcionalidad offline
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(function(registration) {
+                        console.log('Service Worker registrado exitosamente:', registration.scope);
+                        
+                        // Mostrar notificación de instalación
+                        if (registration.installing) {
+                            console.log('Service Worker instalando...');
+                        } else if (registration.waiting) {
+                            console.log('Service Worker esperando...');
+                            showInstallPrompt();
+                        } else if (registration.active) {
+                            console.log('Service Worker activo');
+                        }
+                    })
+                    .catch(function(error) {
+                        console.log('Error al registrar Service Worker:', error);
+                    });
+            });
+        }
+
+        // Manejar evento de instalación PWA
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('PWA: Evento beforeinstallprompt disparado');
+            e.preventDefault();
+            deferredPrompt = e;
+            showInstallButton();
+        });
+
+        // Mostrar botón de instalación
+        function showInstallButton() {
+            if (installBtn && deferredPrompt) {
+                installBtn.style.display = 'flex';
+                installBtn.addEventListener('click', handleInstallClick);
+            }
+        }
+
+        // Manejar click en botón de instalación
+        async function handleInstallClick() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`PWA: Usuario ${outcome} la instalación`);
+                
+                if (outcome === 'accepted') {
+                    console.log('PWA: Usuario aceptó la instalación');
+                } else {
+                    console.log('PWA: Usuario rechazó la instalación');
+                }
+                
+                deferredPrompt = null;
+                hideInstallButton();
+            }
+        }
+
+        // Ocultar botón de instalación
+        function hideInstallButton() {
+            if (installBtn) {
+                installBtn.style.display = 'none';
+            }
+        }
+
+        // Verificar si ya está instalada la app
+        function checkIfInstalled() {
+            // Verificar si está en modo standalone (ya instalada)
+            if (window.matchMedia('(display-mode: standalone)').matches || 
+                window.navigator.standalone === true) {
+                hideInstallButton();
+                return true;
+            }
+            return false;
+        }
+
+        // Verificar al cargar la página
+        window.addEventListener('load', () => {
+            if (!checkIfInstalled()) {
+                // Si no está instalada, mostrar el botón si hay prompt disponible
+                if (deferredPrompt) {
+                    showInstallButton();
+                }
+            }
+        });
+
+        // Detectar cuando la app se instala
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('PWA: App instalada exitosamente');
+            hideInstallButton();
+        });
+
+        // Detectar cambios de conectividad
+        window.addEventListener('online', () => {
+            console.log('Conexión restaurada');
+            // Opcional: mostrar notificación de conexión restaurada
+        });
+
+        window.addEventListener('offline', () => {
+            console.log('Sin conexión - modo offline activo');
+            // Opcional: mostrar notificación de modo offline
+        });
+    </script>
+</body>
+</html> 
